@@ -10,38 +10,82 @@
  * https://developers.themoviedb.org/3/configuration/get-api-configuration
  */
 
-const mainUrl = `https://api.themoviedb.org/3/movie`;
+const mainUrl = `https://api.themoviedb.org`;
+const mainImgUrl = `https://image.tmdb.org`;
 const apiKey = `21629b2bbf4bb4857806d309dcfd1837`;
 
 async function getMoviesResponse(from = 0, to = 12) {
-  console.log(from, to);
+  // console.log(from, to);
   try {
     const promisesArr = [];
     for (let x = from; x < to; x++) {
-      promisesArr.push(
-        fetch(
-          `https://api.themoviedb.org/3/movie/${x}?api_key=21629b2bbf4bb4857806d309dcfd1837`
-        )
-      );
+      promisesArr.push(fetch(`${mainUrl}/3/movie/${x}?api_key=${apiKey}`));
     }
 
     const responses = await Promise.all(promisesArr);
     const successfulResponse = responses.filter((res) => res.status === 200);
-    console.log("successfulResponse: ", successfulResponse);
-    return successfulResponse;
+    // console.log("successfulResponse: ", successfulResponse);
+    return successfulResponse.length ? successfulResponse : null;
   } catch (error) {
-    console.log("Error fetching movies: ", error);
+    console.log(error);
+    return null;
   }
 }
 
-async function getMovies(moviesPerPage = 12) {
-  let movies = [];
-  let lastId = 0;
+/**
+ * Function serializeMovies, array of movies turn in the Object {movie.id: movie}
+ * @param {Array} moviesArr
+ */
+function serializeMovies(currentPage, moviesArr) {
+  const moviesObj = moviesArr.reduce((acc, movie) => {
+    acc[movie.id] = movie;
+    return acc;
+  }, {});
+  const basePageObject = { [currentPage]: { ...moviesObj } };
+  return basePageObject;
+}
 
-  while (movies.length < moviesPerPage) {
+/**
+ * Add into movie object reference on the banner -> banner: 'string path'
+ * @param {Array} movies
+ */
+function getMoviesBanners(movies) {
+  const banners = movies.map((movie) => {
+    return {
+      ...movie,
+      banner: `${mainImgUrl}/t/p/w300${movie.poster_path}`,
+    };
+  });
+  return banners;
+}
+
+async function getMovies(moviesOnPage = 12, lastIdOnPage = 0, currentPage = 1) {
+  const currPage = currentPage;
+  let movies = [];
+  let lastId = lastIdOnPage;
+  let errors = 0;
+
+  // we need 12 movies, so let's get them
+  while (movies.length < moviesOnPage) {
     const from = lastId;
-    const to = lastId + (moviesPerPage - movies.length);
+    const to = lastId + (moviesOnPage - movies.length);
     const currentMovies = await getMoviesResponse(from, to);
+    // console.log("currentMovies: ", currentMovies);
+
+    // check fetch errors
+    if (!currentMovies) {
+      lastId++;
+      errors++;
+      if (errors === 30) {
+        return {
+          error: true,
+          movies: {},
+          lastId: 0,
+        };
+      }
+      continue;
+    }
+
     const moviesArr = await Promise.all(
       currentMovies.map((movie) => movie.json())
     );
@@ -49,26 +93,17 @@ async function getMovies(moviesPerPage = 12) {
     lastId = moviesArr[moviesArr.length - 1].id + 1;
   }
 
-  return movies;
+  // get movies pictures
+  const moviesWithBanners = getMoviesBanners(movies);
+
+  // serialize movies
+  const moviesObj = serializeMovies(currentPage, moviesWithBanners);
+
+  return {
+    error: false,
+    movies: moviesObj,
+    lastId: --lastId,
+  };
 }
 
 export { getMovies };
-
-/*
-try {
-    await Promise.all(requests)
-      .then((responses) => {
-        // all responses are resolved successfully
-        for (let response of responses) {
-          console.log(`${response.url}: ${response.status}`); // shows 200 for every url
-        }
-
-        return responses;
-      })
-      // map array of responses into an array of response.json() to read their content
-      .then((responses) => Promise.all(responses.map((r) => r.json())))
-      // all JSON answers are parsed: "users" is the array of them
-      .then((movies) => movies.forEach((movie) => console.log(movie)));
-
-  }
-   */
