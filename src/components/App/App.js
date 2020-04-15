@@ -7,7 +7,7 @@ class App extends Component {
     super();
     this.state = {
       error: false,
-      movies: null, // {pageNumber: {movieId: movieObject}}
+      movies: null, // {movieId: movieObject}
       moviesOnPage: 12,
       currentPage: 1,
       pageIds: {}, // {page_number: lastIdOnPage}
@@ -33,52 +33,76 @@ class App extends Component {
     }
     // console.log(movies, lastId);
     this.setState(() => ({
-      movies,
+      movies: {
+        ...this.state.movies,
+        ...movies,
+      },
       lastIdOnPage: lastId,
     }));
   };
 
   paginationHandler = async (e) => {
     const { page } = e.target.dataset;
+    let currPage = this.state.currentPage;
 
-    // switch (page) {
-    //   case "first":
-    //     this.setState(() => ({
-    //       currentPage: 1,
-    //       lastIdOnPage: 0,
-    //     }));
-    //     break;
-    //   case "previous":
-    //     this.setState(() => ({
-    //       currentPage:
-    //         this.state.currentPage !== 1
-    //           ? this.state.currentPage - 1
-    //           : this.state.currentPage,
-    //       lastIdOnPage:
-    //         this.state.currentPage !== 1
-    //           ? this.state.lastIdOnPage - this.state.moviesOnPage
-    //           : 0,
-    //     }));
-    //     break;
-    //   case "next":
-    //     this.setState(() => ({
-    //       currentPage: this.state.currentPage + 1,
-    //     }));
-    //     break;
-    // }
-
-    // this.fetchMovies();
-    // this.getMovieCard();
+    switch (page) {
+      case "first":
+        await this.setState(() => ({
+          currentPage: 1,
+          lastIdOnPage: 0,
+        }));
+        break;
+      case "previous":
+        // await this.setState(() => ({
+        //   currentPage:
+        //     this.state.currentPage !== 1
+        //       ? this.state.currentPage - 1
+        //       : this.state.currentPage,
+        //   lastIdOnPage:
+        //     this.state.currentPage !== 1
+        //       ? this.state.lastIdOnPage - this.state.moviesOnPage
+        //       : 0,
+        // }));
+        break;
+      case "next":
+        await this.setState(() => ({
+          currentPage: this.state.currentPage + 1,
+        }));
+        break;
+    }
+    await this.getMoviesList();
   };
 
-  render() {
-    const cards = !this.state.movies
-      ? null
-      : Object.values(
-          this.state.movies[this.state.currentPage]
-        ).map((movie) => <div key={movie.id}>{movie.original_title}</div>);
-    console.log(this);
+  async getMoviesList() {
+    console.log(this.state);
+    const needsMoviesLength = this.state.currentPage * this.state.moviesOnPage;
+    if (needsMoviesLength > Object.values(this.state.movies).length) {
+      await this.fetchMovies();
+      // console.log("this.state: ", this.state);
+    } else {
+    }
+  }
 
+  renderUI() {
+    const cards = !this.state.movies ? (
+      <div>
+        We can't fetch movies... Connect with your administrator, please.
+      </div>
+    ) : (
+      Object.values(this.state.movies).map((movie) => (
+        <div key={movie.id}>{movie.original_title}</div>
+      ))
+      );
+    return cards;
+  }
+
+  render() {
+    // const cards = !this.state.movies
+    //   ? null
+    //   : Object.values(
+    //       this.state.movies[this.state.currentPage]
+    //     ).map((movie) => <div key={movie.id}>{movie.original_title}</div>);
+    console.log(this);
 
     return (
       <div className="main-wrapper">
@@ -86,19 +110,23 @@ class App extends Component {
           <h1>Movies</h1>
         </header>
         <main>
-          <div className="movies-wrapper">{cards}</div>
+          <div className="movies-wrapper">{this.state.movies && this.renderUI()}</div>
         </main>
         <footer>
-          {this.state.currentPage !== 1 ? (
-            <React.Fragment>
-              <button data-page="first" onClick={this.paginationHandler}>
-                First page
-              </button>
-              <button data-page="previous" onClick={this.paginationHandler}>
-                Prev
-              </button>
-            </React.Fragment>
-          ) : null}
+          <button
+            data-page="first"
+            onClick={this.paginationHandler}
+            disabled={this.state.currentPage === 1 ? true : false}
+          >
+            First page
+          </button>
+          <button
+            data-page="previous"
+            onClick={this.paginationHandler}
+            disabled={this.state.currentPage === 1 ? true : false}
+          >
+            Prev
+          </button>
           <button data-page="current">
             Current Page: {this.state.currentPage}
           </button>

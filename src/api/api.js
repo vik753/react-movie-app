@@ -36,13 +36,12 @@ async function getMoviesResponse(from = 0, to = 12) {
  * Function serializeMovies, array of movies turn in the Object {movie.id: movie}
  * @param {Array} moviesArr
  */
-function serializeMovies(currentPage, moviesArr) {
+function serializeMovies(moviesArr) {
   const moviesObj = moviesArr.reduce((acc, movie) => {
     acc[movie.id] = movie;
     return acc;
   }, {});
-  const basePageObject = { [currentPage]: { ...moviesObj } };
-  return basePageObject;
+  return moviesObj;
 }
 
 /**
@@ -50,13 +49,13 @@ function serializeMovies(currentPage, moviesArr) {
  * @param {Array} movies
  */
 function getMoviesBanners(movies) {
-  const banners = movies.map((movie) => {
-    return {
-      ...movie,
-      banner: `${mainImgUrl}/t/p/w300${movie.poster_path}`,
-    };
+  const moviesWithBanners = movies.map((movie) => {
+      return {
+        ...movie,
+        banner: !movie.poster_path ? null : `${mainImgUrl}/t/p/w300${movie.poster_path}`,
+      };
   });
-  return banners;
+  return moviesWithBanners;
 }
 
 async function getMovies(moviesOnPage = 12, lastIdOnPage = 0, currentPage = 1) {
@@ -86,6 +85,8 @@ async function getMovies(moviesOnPage = 12, lastIdOnPage = 0, currentPage = 1) {
       continue;
     }
 
+    errors = 0;
+
     const moviesArr = await Promise.all(
       currentMovies.map((movie) => movie.json())
     );
@@ -97,7 +98,7 @@ async function getMovies(moviesOnPage = 12, lastIdOnPage = 0, currentPage = 1) {
   const moviesWithBanners = getMoviesBanners(movies);
 
   // serialize movies
-  const moviesObj = serializeMovies(currentPage, moviesWithBanners);
+  const moviesObj = serializeMovies(moviesWithBanners);
 
   return {
     error: false,
