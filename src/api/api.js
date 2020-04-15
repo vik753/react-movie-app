@@ -50,36 +50,47 @@ function serializeMovies(moviesArr) {
  */
 function getMoviesBanners(movies) {
   const moviesWithBanners = movies.map((movie) => {
-      return {
-        ...movie,
-        banner: !movie.poster_path ? null : `${mainImgUrl}/t/p/w300${movie.poster_path}`,
-      };
+    return {
+      ...movie,
+      banner: !movie.poster_path
+        ? null
+        : `${mainImgUrl}/t/p/w300${movie.poster_path}`,
+    };
   });
   return moviesWithBanners;
 }
 
-async function getMovies(moviesOnPage = 12, lastIdOnPage = 0, currentPage = 1) {
-  const currPage = currentPage;
+async function getMovies(
+  moviesOnPage = 12,
+  lastMovieId = 0,
+  firstMovieId = 0,
+  pageNumber = 1
+) {
+  const currPage = pageNumber;
   let movies = [];
-  let lastId = lastIdOnPage;
+  let firstId = firstMovieId;
+  let lastId = lastMovieId;
   let errors = 0;
 
   // we need 12 movies, so let's get them
   while (movies.length < moviesOnPage) {
     const from = lastId;
     const to = lastId + (moviesOnPage - movies.length);
+    console.log("from:", from, "to:", to);
     const currentMovies = await getMoviesResponse(from, to);
-    // console.log("currentMovies: ", currentMovies);
+    console.log("currentMovies: ", currentMovies);
 
     // check fetch errors
     if (!currentMovies) {
       lastId++;
       errors++;
-      if (errors === 30) {
+      if (errors === 40) {
         return {
           error: true,
           movies: {},
-          lastId: 0,
+          pageNum: pageNumber,
+          firstMovId: 0,
+          lastMovId: 0,
         };
       }
       continue;
@@ -94,6 +105,10 @@ async function getMovies(moviesOnPage = 12, lastIdOnPage = 0, currentPage = 1) {
     lastId = moviesArr[moviesArr.length - 1].id + 1;
   }
 
+  firstId = movies[0].id;
+  lastId = movies[movies.length-1].id;
+  console.log("firstId", firstId, "lastId", lastId);
+
   // get movies pictures
   const moviesWithBanners = getMoviesBanners(movies);
 
@@ -103,7 +118,9 @@ async function getMovies(moviesOnPage = 12, lastIdOnPage = 0, currentPage = 1) {
   return {
     error: false,
     movies: moviesObj,
-    lastId: --lastId,
+    pageNum: pageNumber,
+    firstMovId: firstId,
+    lastMovId: lastId,
   };
 }
 

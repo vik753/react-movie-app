@@ -9,100 +9,94 @@ class App extends Component {
       error: false,
       movies: null, // {movieId: movieObject}
       moviesOnPage: 12,
-      currentPage: 1,
-      pageIds: {}, // {page_number: lastIdOnPage}
-      lastIdOnPage: 0,
+      pageNumber: 1,
+      firstMovieId: 0,
+      lastMovieId: 0,
+      pageHistory: [], //[2,17,...] -> [pageNumber = index + 1, firstMovieId]
     };
   }
 
   componentDidMount() {
+    // console.log("Did mount");
     this.fetchMovies();
   }
 
   fetchMovies = async () => {
-    const { lastIdOnPage, moviesOnPage, currentPage } = this.state;
-    const { error, movies, lastId } = await getMovies(
+    console.log("Fetch");
+    const { moviesOnPage, pageNumber, firstMovieId, lastMovieId } = this.state;
+    const { error, movies, pageNum, firstMovId, lastMovId } = await getMovies(
       moviesOnPage,
-      lastIdOnPage,
-      currentPage
+      lastMovieId + 1,
+      firstMovieId,
+      pageNumber
     );
 
     if (error) {
-      this.setState(() => ({ error: true }));
+      await this.setState(() => ({ error: true }));
       return;
     }
     // console.log(movies, lastId);
-    this.setState(() => ({
+    await this.setState(() => ({
       movies: {
-        ...this.state.movies,
         ...movies,
       },
-      lastIdOnPage: lastId,
+      error,
+      pageNumber: pageNum,
+      firstMovieId: firstMovId,
+      lastMovieId: lastMovId,
+      pageHistory: [
+        ...this.state.pageHistory,
+        (this.state.pageHistory[this.state.currentPage - 1] = firstMovId),
+      ], //[[1,2],[2,17],[pageNumber, firstMovieId]]
     }));
   };
 
   paginationHandler = async (e) => {
     const { page } = e.target.dataset;
-    let currPage = this.state.currentPage;
 
     switch (page) {
       case "first":
         await this.setState(() => ({
-          currentPage: 1,
-          lastIdOnPage: 0,
+          pageNumber: 1,
+          lastMovieId: 0,
         }));
         break;
       case "previous":
-        // await this.setState(() => ({
-        //   currentPage:
-        //     this.state.currentPage !== 1
-        //       ? this.state.currentPage - 1
-        //       : this.state.currentPage,
-        //   lastIdOnPage:
-        //     this.state.currentPage !== 1
-        //       ? this.state.lastIdOnPage - this.state.moviesOnPage
-        //       : 0,
-        // }));
+        const newLastId = this.state.pageHistory[this.state.pageNumber - 2];
+        console.log("newLastId", newLastId);
+        await this.setState(() => ({
+          pageNumber:
+            this.state.pageNumber !== 1
+              ? this.state.pageNumber - 1
+              : this.state.pageNumber,
+          lastMovieId: this.state.pageHistory[this.state.pageNumber - 2],
+        }));
+        // console.log(this.state.currentPage);
         break;
       case "next":
         await this.setState(() => ({
-          currentPage: this.state.currentPage + 1,
+          pageNumber: this.state.pageNumber + 1,
         }));
         break;
     }
-    await this.getMoviesList();
+    this.fetchMovies();
   };
 
-  async getMoviesList() {
-    console.log(this.state);
-    const needsMoviesLength = this.state.currentPage * this.state.moviesOnPage;
-    if (needsMoviesLength > Object.values(this.state.movies).length) {
-      await this.fetchMovies();
-      // console.log("this.state: ", this.state);
-    } else {
-    }
-  }
-
-  renderUI() {
-    const cards = !this.state.movies ? (
-      <div>
-        We can't fetch movies... Connect with your administrator, please.
-      </div>
-    ) : (
-      Object.values(this.state.movies).map((movie) => (
-        <div key={movie.id}>{movie.original_title}</div>
-      ))
-      );
-    return cards;
-  }
-
   render() {
-    // const cards = !this.state.movies
-    //   ? null
-    //   : Object.values(
-    //       this.state.movies[this.state.currentPage]
-    //     ).map((movie) => <div key={movie.id}>{movie.original_title}</div>);
     console.log(this);
+
+    const cards =
+      !this.state.movies || this.state.error ? (
+        <div>
+          Error for fetching movies... Connect with administrator, please.
+        </div>
+      ) : (
+        Object.values(this.state.movies).map((movie) => (
+          <li>
+            id: {movie.id}, Title: {movie.original_title}
+          </li>
+        ))
+      );
 
     return (
       <div className="main-wrapper">
@@ -110,25 +104,25 @@ class App extends Component {
           <h1>Movies</h1>
         </header>
         <main>
-          <div className="movies-wrapper">{this.state.movies && this.renderUI()}</div>
+          <ul className="movies-wrapper">{cards}</ul>
         </main>
         <footer>
           <button
             data-page="first"
             onClick={this.paginationHandler}
-            disabled={this.state.currentPage === 1 ? true : false}
+            disabled={this.state.pageNumber === 1 ? true : false}
           >
             First page
           </button>
           <button
             data-page="previous"
             onClick={this.paginationHandler}
-            disabled={this.state.currentPage === 1 ? true : false}
+            disabled={this.state.pageNumber === 1 ? true : false}
           >
             Prev
           </button>
           <button data-page="current">
-            Current Page: {this.state.currentPage}
+            Current Page: {this.state.pageNumber}
           </button>
           <button data-page="next" onClick={this.paginationHandler}>
             Next
