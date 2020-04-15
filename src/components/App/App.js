@@ -47,7 +47,7 @@ class App extends Component {
       pageHistory: [
         ...this.state.pageHistory,
         (this.state.pageHistory[this.state.currentPage - 1] = firstMovId),
-      ], //[[1,2],[2,17],[pageNumber, firstMovieId]]
+      ], 
     }));
   };
 
@@ -69,9 +69,8 @@ class App extends Component {
             this.state.pageNumber !== 1
               ? this.state.pageNumber - 1
               : this.state.pageNumber,
-          lastMovieId: this.state.pageHistory[this.state.pageNumber - 2],
+          lastMovieId: this.state.pageHistory[this.state.pageNumber - 2] - 1,
         }));
-        // console.log(this.state.currentPage);
         break;
       case "next":
         await this.setState(() => ({
