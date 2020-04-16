@@ -17,17 +17,14 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // console.log("Did mount");
     this.fetchMovies();
   }
 
   fetchMovies = async () => {
-    console.log("Fetch");
-    const { moviesOnPage, pageNumber, firstMovieId, lastMovieId } = this.state;
+    const { moviesOnPage, pageNumber, lastMovieId } = this.state;
     const { error, movies, pageNum, firstMovId, lastMovId } = await getMovies(
       moviesOnPage,
       lastMovieId + 1,
-      firstMovieId,
       pageNumber
     );
 
@@ -35,19 +32,13 @@ class App extends Component {
       await this.setState(() => ({ error: true }));
       return;
     }
-    // console.log(movies, lastId);
     await this.setState(() => ({
-      movies: {
-        ...movies,
-      },
+      movies,
       error,
       pageNumber: pageNum,
       firstMovieId: firstMovId,
       lastMovieId: lastMovId,
-      pageHistory: [
-        ...this.state.pageHistory,
-        (this.state.pageHistory[this.state.currentPage - 1] = firstMovId),
-      ], 
+      pageHistory: [...new Set([...this.state.pageHistory, firstMovId])],
     }));
   };
 
@@ -82,7 +73,7 @@ class App extends Component {
   };
 
   render() {
-    console.log(this);
+    // console.log(this);
 
     const cards =
       !this.state.movies || this.state.error ? (
@@ -91,7 +82,7 @@ class App extends Component {
         </div>
       ) : (
         Object.values(this.state.movies).map((movie) => (
-          <li>
+          <li key={movie.id}>
             id: {movie.id}, Title: {movie.original_title}
           </li>
         ))
@@ -109,21 +100,29 @@ class App extends Component {
           <button
             data-page="first"
             onClick={this.paginationHandler}
-            disabled={this.state.pageNumber === 1 ? true : false}
+            disabled={
+              this.state.pageNumber === 1 || this.state.error ? true : false
+            }
           >
             First page
           </button>
           <button
             data-page="previous"
             onClick={this.paginationHandler}
-            disabled={this.state.pageNumber === 1 ? true : false}
+            disabled={
+              this.state.pageNumber === 1 || this.state.error ? true : false
+            }
           >
             Prev
           </button>
-          <button data-page="current">
+          <span data-page="current">
             Current Page: {this.state.pageNumber}
-          </button>
-          <button data-page="next" onClick={this.paginationHandler}>
+          </span>
+          <button
+            data-page="next"
+            onClick={this.paginationHandler}
+            disabled={this.state.error ? true : false}
+          >
             Next
           </button>
         </footer>

@@ -24,7 +24,6 @@ async function getMoviesResponse(from = 0, to = 12) {
 
     const responses = await Promise.all(promisesArr);
     const successfulResponse = responses.filter((res) => res.status === 200);
-    // console.log("successfulResponse: ", successfulResponse);
     return successfulResponse.length ? successfulResponse : null;
   } catch (error) {
     console.log(error);
@@ -60,15 +59,9 @@ function getMoviesBanners(movies) {
   return moviesWithBanners;
 }
 
-async function getMovies(
-  moviesOnPage = 12,
-  lastMovieId = 0,
-  firstMovieId = 0,
-  pageNumber = 1
-) {
+async function getMovies(moviesOnPage = 12, lastMovieId = 0, pageNumber = 1) {
   const currPage = pageNumber;
   let movies = [];
-  let firstId = firstMovieId;
   let lastId = lastMovieId;
   let errors = 0;
 
@@ -76,9 +69,7 @@ async function getMovies(
   while (movies.length < moviesOnPage) {
     const from = lastId;
     const to = lastId + (moviesOnPage - movies.length);
-    console.log("from:", from, "to:", to);
     const currentMovies = await getMoviesResponse(from, to);
-    console.log("currentMovies: ", currentMovies);
 
     // check fetch errors
     if (!currentMovies) {
@@ -101,13 +92,10 @@ async function getMovies(
     const moviesArr = await Promise.all(
       currentMovies.map((movie) => movie.json())
     );
+
     movies = [...movies, ...moviesArr];
     lastId = moviesArr[moviesArr.length - 1].id + 1;
   }
-
-  firstId = movies[0].id;
-  lastId = movies[movies.length-1].id;
-  console.log("firstId", firstId, "lastId", lastId);
 
   // get movies pictures
   const moviesWithBanners = getMoviesBanners(movies);
@@ -119,8 +107,8 @@ async function getMovies(
     error: false,
     movies: moviesObj,
     pageNum: pageNumber,
-    firstMovId: firstId,
-    lastMovId: lastId,
+    firstMovId: movies[0].id,
+    lastMovId: movies[movies.length - 1].id,
   };
 }
 
