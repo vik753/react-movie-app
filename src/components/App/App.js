@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import { getMovies } from "../../api/api";
+import "./app.scss";
 
 class App extends Component {
   constructor() {
@@ -13,6 +14,7 @@ class App extends Component {
       firstMovieId: 0,
       lastMovieId: 0,
       pageHistory: [], //[2,17,...] -> [pageNumber = index + 1, firstMovieId]
+      isLoading: false,
     };
   }
 
@@ -21,11 +23,14 @@ class App extends Component {
   }
 
   fetchMovies = async () => {
-    const { moviesOnPage, pageNumber, lastMovieId } = this.state;
-    const { error, movies, pageNum, firstMovId, lastMovId } = await getMovies(
+    await this.setState(() => ({
+      isLoading: true,
+    }));
+
+    const { moviesOnPage, lastMovieId } = this.state;
+    const { error, movies, firstMovId, lastMovId } = await getMovies(
       moviesOnPage,
-      lastMovieId + 1,
-      pageNumber
+      lastMovieId + 1
     );
 
     if (error) {
@@ -35,10 +40,10 @@ class App extends Component {
     await this.setState(() => ({
       movies,
       error,
-      pageNumber: pageNum,
       firstMovieId: firstMovId,
       lastMovieId: lastMovId,
       pageHistory: [...new Set([...this.state.pageHistory, firstMovId])],
+      isLoading: false,
     }));
   };
 
@@ -82,49 +87,82 @@ class App extends Component {
         </div>
       ) : (
         Object.values(this.state.movies).map((movie) => (
-          <li key={movie.id}>
+          <div
+            className="movie-card"
+            key={movie.id}
+            style={{
+              backgroundImage: `url(${
+                movie.banner
+                  ? movie.banner
+                  : `./img/blank-img.jpg`
+              })`,
+            }}
+          >
             id: {movie.id}, Title: {movie.original_title}
-          </li>
+          </div>
         ))
       );
 
     return (
-      <div className="main-wrapper">
+      <div className="app-wrapper">
         <header>
-          <h1>Movies</h1>
+          <div className="header-wrapper">
+            <h1>Movies by TMDB</h1>
+          </div>
         </header>
         <main>
-          <ul className="movies-wrapper">{cards}</ul>
+          <div className="main-wrapper">
+            {cards}
+          </div>
         </main>
         <footer>
-          <button
-            data-page="first"
-            onClick={this.paginationHandler}
-            disabled={
-              this.state.pageNumber === 1 || this.state.error ? true : false
-            }
-          >
-            First page
-          </button>
-          <button
-            data-page="previous"
-            onClick={this.paginationHandler}
-            disabled={
-              this.state.pageNumber === 1 || this.state.error ? true : false
-            }
-          >
-            Prev
-          </button>
-          <span data-page="current">
-            Current Page: {this.state.pageNumber}
-          </span>
-          <button
-            data-page="next"
-            onClick={this.paginationHandler}
-            disabled={this.state.error ? true : false}
-          >
-            Next
-          </button>
+          <div className="footer-wrapper">
+            <button
+              data-page="first"
+              onClick={this.paginationHandler}
+              disabled={
+                this.state.pageNumber === 1 ||
+                this.state.error ||
+                this.state.isLoading
+                  ? true
+                  : false
+              }
+              className="primary"
+            >
+              Page 1
+            </button>
+            <button
+              data-page="previous"
+              onClick={this.paginationHandler}
+              disabled={
+                this.state.pageNumber === 1 ||
+                this.state.error ||
+                this.state.isLoading
+                  ? true
+                  : false
+              }
+              className="primary"
+            >
+              <i className="fa fa-chevron-left"></i>
+              Prev
+            </button>
+            <span data-page="current" className="current-page">
+              Current Page:
+              <span className="current-page__number">
+                {" "}
+                {this.state.pageNumber}
+              </span>
+            </span>
+            <button
+              data-page="next"
+              onClick={this.paginationHandler}
+              disabled={this.state.error || this.state.isLoading ? true : false}
+              className="primary"
+            >
+              Next
+              <i className="fa fa-chevron-right"></i>
+            </button>
+          </div>
         </footer>
       </div>
     );

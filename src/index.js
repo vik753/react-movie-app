@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import * as serviceWorker from "./serviceWorker";
 
+import "./resources/font-awesome/scss/font-awesome.scss";
 import "./index.scss";
 import App from "./components/App/App";
 

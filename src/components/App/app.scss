@@ -1,0 +1,105 @@
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #032541;
+  color: #5dc4b9;
+  z-index: 100;
+
+  .header-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 11px;
+
+    h1 {
+      font-size: 2rem;
+    }
+  }
+}
+
+main {
+  padding-top: 6rem;
+  flex: 1 1 auto;
+  background: rgb(3, 61, 92);
+  background: -moz-linear-gradient(
+    0deg,
+    rgba(3, 61, 92, 1) 0%,
+    rgba(1, 109, 147, 1) 48%,
+    rgba(2, 145, 189, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    0deg,
+    rgba(3, 61, 92, 1) 0%,
+    rgba(1, 109, 147, 1) 48%,
+    rgba(2, 145, 189, 1) 100%
+  );
+  background: linear-gradient(
+    0deg,
+    rgba(3, 61, 92, 1) 0%,
+    rgba(1, 109, 147, 1) 48%,
+    rgba(2, 145, 189, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#033d5c",endColorstr="#0291bd",GradientType=1);
+
+  .main-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .movie-card {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      flex: 0 0 280px;
+      height: 420px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-clip: content-box;
+      transition: all 0.2s ease-in-out;
+      margin: 0 11px 11px 0;
+
+      &:hover{
+        cursor: pointer;
+        box-shadow: 0 0 8px 4px rgba(170, 206, 219, 0.637);
+        transform: scale(1.01);
+        z-index: 1;
+      }
+    }
+  }
+}
+
+footer {
+  background-color: #032541;
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+  margin: 0;
+
+  .footer-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .fa-chevron-left {
+      margin-right: 0.3rem;
+    }
+    .fa-chevron-right {
+      margin-left: 0.3rem;
+    }
+    .current-page {
+      margin: 0 1rem;
+    }
+    .current-page__number {
+      font-size: 1rem;
+    }
+  }
+}

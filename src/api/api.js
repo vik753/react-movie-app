@@ -59,8 +59,7 @@ function getMoviesBanners(movies) {
   return moviesWithBanners;
 }
 
-async function getMovies(moviesOnPage = 12, lastMovieId = 0, pageNumber = 1) {
-  const currPage = pageNumber;
+async function getMovies(moviesOnPage = 12, lastMovieId = 0) {
   let movies = [];
   let lastId = lastMovieId;
   let errors = 0;
@@ -79,7 +78,6 @@ async function getMovies(moviesOnPage = 12, lastMovieId = 0, pageNumber = 1) {
         return {
           error: true,
           movies: {},
-          pageNum: pageNumber,
           firstMovId: 0,
           lastMovId: 0,
         };
@@ -106,7 +104,6 @@ async function getMovies(moviesOnPage = 12, lastMovieId = 0, pageNumber = 1) {
   return {
     error: false,
     movies: moviesObj,
-    pageNum: pageNumber,
     firstMovId: movies[0].id,
     lastMovId: movies[movies.length - 1].id,
   };
