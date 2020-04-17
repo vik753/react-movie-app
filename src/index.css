@@ -1,0 +1,38 @@
+@font-face {
+  font-family: "photon-entypo";
+  src: url("./resources/photon-entypo.eot");
+  src: url("./resources/photon-entypo.eot?#iefix") format("eot"), url("./resources/photon-entypo.woff") format("woff"), url("./resources/photon-entypo.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: "photon-entypo", system, -apple-system, ".SFNSDisplay-Regular", "Helvetica Neue", Helvetica, "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: #363636;
+}
+
+button:disabled {
+  opacity: 0.7;
+}
+
+button.primary {
+  cursor: pointer;
+  outline: none;
+  border: 1px solid #0291BD;
+  border-radius: 4px;
+  padding: 0.5rem 0.8rem;
+  margin: 0.1rem;
+  background-color: #0291BD;
+  color: #fff;
+}
+
+button.primary:hover:not(:disabled) {
+  border: 1px solid #fff;
+}
+/*# sourceMappingURL=index.css.map */
