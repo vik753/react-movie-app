@@ -8,9 +8,10 @@ class CircleRating extends React.Component {
       width = 40,
       ratingColor = "#06cf10",
       ratingWidth = 3,
+      id,
     } = this.props;
 
-    const canvas = document.getElementById("canvas");
+    const canvas = document.getElementById(id);
     const ctx = canvas.getContext("2d");
     const pi = Math.PI;
     const oneDegree = pi / 180;
@@ -37,15 +38,15 @@ class CircleRating extends React.Component {
       width / 2,
       width / 2 - ratingWidth,
       0,
-      onePercent * rating,
+      onePercent * (rating * 10),
       false
     );
     // ctx.arc(x, y, radius, angel_start, angel_end, anticlockwise);
     ctx.lineWidth = ratingWidth;
     ctx.strokeStyle = "tomato";
-    if (rating >= 80) {
+    if (rating * 10 >= 80) {
       ctx.strokeStyle = ratingColor;
-    } else if (rating >= 40) {
+    } else if (rating * 10 >= 40) {
       ctx.strokeStyle = "yellow";
     }
     ctx.lineWidth = ratingWidth;
@@ -59,6 +60,7 @@ class CircleRating extends React.Component {
       bgColor = "#000",
       fontSize = "14",
       fontWeight = "normal",
+      id
     } = this.props; //60, 100
 
     return (
@@ -77,7 +79,7 @@ class CircleRating extends React.Component {
         }}
       >
         <canvas
-          id="canvas"
+          id={id}
           className="canvas"
           width={width}
           height={width}
@@ -95,19 +97,19 @@ class CircleRating extends React.Component {
             display: "block",
             position: "absolute",
             zIndex: "100",
-            transform: "translateX(-50%)",
-            left: width / 2 + 2,
+            // transform: "translateX(-50%)",
+            // left: width / 2 + 1,
           }}
         >
-          {rating}
+          {rating || "NR"}
           <span
             style={{
               color: `${textColor}`,
-              fontSize: `${fontSize - 5}px`,
+              fontSize: `${fontSize - 6}px`,
               fontWeight: `normal`,
             }}
           >
-            <sup>%</sup>
+            {/* <sup>{rating ? '%' : null}</sup> */}
           </span>
         </span>
       </div>

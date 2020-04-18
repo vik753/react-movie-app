@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import { getMovies } from "../../api/api";
+import MovieCard from "./../MovieCard/MovieCard";
 import "./app.scss";
 
 class App extends Component {
@@ -74,11 +75,13 @@ class App extends Component {
         }));
         break;
     }
-    this.fetchMovies();
+    await this.fetchMovies();
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    document.body.scrollTop = 0; // For Safari
   };
 
   render() {
-    // console.log(this);
+    console.log(this);
 
     const cards =
       !this.state.movies || this.state.error ? (
@@ -86,32 +89,20 @@ class App extends Component {
           Error for fetching movies... Connect with administrator, please.
         </div>
       ) : (
-        Object.values(this.state.movies).map((movie) => (
-          <div
-            className="movie-card"
-            key={movie.id}
-            style={{
-              backgroundImage: `url(${
-                movie.banner
-                  ? movie.banner
-                  : `./img/blank-img.jpg`
-              })`,
-            }}
-          >
-            id: {movie.id}, Title: {movie.original_title}
-          </div>
-        ))
+        Object.values(this.state.movies).map((movie, index) => {
+          return <MovieCard movie={movie} key={movie.id} />;
+        })
       );
 
     return (
       <div className="app-wrapper">
         <header>
           <div className="header-wrapper">
-            <h1>Movies by TMDB</h1>
+            <h1 id="headerTitle">Movies by TMDB</h1>
           </div>
         </header>
         <main>
-          <div className="main-wrapper">
+          <div className="main-wrapper" id="main-wrapper">
             {cards}
           </div>
         </main>

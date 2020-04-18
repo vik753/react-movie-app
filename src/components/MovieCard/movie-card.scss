@@ -1,0 +1,46 @@
+.movie-card {
+  border: 1px solid transparent;
+  border-radius: 10px;
+  flex: 0 0 230px;
+  height: 440px;
+  background: #fff;
+  transition: all 0.2s ease-in-out;
+  margin: 0 11px 11px 0;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 8px 4px rgba(170, 206, 219, 0.637);
+    transform: scale(1.01);
+    z-index: 1;
+  }
+
+  .movie-bg {
+    border-radius: 10px 10px 0 0;
+    height: 360px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-clip: content-box;
+  }
+
+  .movie-year {
+    margin: 0;
+    padding: 11px 5px 5px;
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+
+  .movie-title {
+    margin: 0;
+    padding: 0 5px;
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+
+  .rating-wrapper {
+    position: absolute;
+    right: 5px;
+    bottom: 60px;
+  }
+}
