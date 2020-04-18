@@ -10,12 +10,12 @@ import CircleRating from "./components/CircleRating/CircleRating";
 // ReactDOM.render(<App />, document.getElementById("root"));
 ReactDOM.render(
   <CircleRating
-    rating={85}
+    rating={80}
     width={40}
     ratingColor={"#06cf10"}
     textColor={"#fff"}
-    bgColor={"#797979"}
-    ratingWidth={6}
+    bgColor={"#000"}
+    ratingWidth={3}
     fontSize={14}
     fontWeight={"normal"}
   />,

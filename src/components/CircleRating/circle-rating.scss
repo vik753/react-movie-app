@@ -1,6 +1,7 @@
 .test-wrapper {
   width: 200px;
   margin: 200px auto 0;
+
 }
 
 .canvas-wrapper {
@@ -15,14 +16,14 @@
 
   .canvas {
     // border: 1px solid black;
-    transform: rotate(-90deg);
-    position: absolute;
+    // transform: rotate(-90deg);
+    // position: absolute;
   }
 
   .rating-label {
-    display: block;
-    position: absolute;
-    z-index: 100;
+    // display: block;
+    // position: absolute;
+    // z-index: 100;
     // font-weight: normal;
   }
 }
