@@ -1,23 +1,13 @@
 import React from "react";
-import "./circle-rating.scss";
+// import "./circle-rating.scss";
 
 class CircleRating extends React.Component {
   componentDidMount() {
-    /*
-    rating={60}
-    width={40}
-    ratingColor={"#06cf10"}
-    textColor={"#fff"}
-    bgColor={"#e2e2e2"}
-    ratingWidth={5}
-    */
-
     const {
       rating = 0,
-      width = 50,
+      width = 40,
       ratingColor = "#06cf10",
-
-      ratingWidth = 5,
+      ratingWidth = 3,
     } = this.props;
 
     const canvas = document.getElementById("canvas");
@@ -52,12 +42,11 @@ class CircleRating extends React.Component {
     );
     // ctx.arc(x, y, radius, angel_start, angel_end, anticlockwise);
     ctx.lineWidth = ratingWidth;
+    ctx.strokeStyle = "tomato";
     if (rating >= 80) {
       ctx.strokeStyle = ratingColor;
-    } else if (rating >= 50) {
+    } else if (rating >= 40) {
       ctx.strokeStyle = "yellow";
-    } else if (rating >= 30) {
-      ctx.strokeStyle = "tomato";
     }
     ctx.lineWidth = ratingWidth;
     ctx.stroke();
@@ -65,63 +54,62 @@ class CircleRating extends React.Component {
   render() {
     const {
       rating = 0,
-      width = 50,
-      textColor = "black",
-      bgColor = "#fff",
-      fontSize = "10px",
+      width = 40,
+      textColor = "#fff",
+      bgColor = "#000",
+      fontSize = "14",
       fontWeight = "normal",
     } = this.props; //60, 100
+
     return (
-      <div className="test-wrapper">
-        <div
-          className="canvas-wrapper"
+      <div
+        className="canvas-wrapper"
+        style={{
+          overflow: "hidden",
+          width: `${width}px`,
+          height: `${width}px`,
+          borderRadius: "50%",
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: `${bgColor}`,
+        }}
+      >
+        <canvas
+          id="canvas"
+          className="canvas"
+          width={width}
+          height={width}
           style={{
-            overflow: "hidden",
-            width: `${width}px`,
-            height: `${width}px`,
-            borderRadius: "50%",
-            position: "relative",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: `${bgColor}`,
+            transform: "rotate(-90deg)",
+            position: "absolute",
+          }}
+        ></canvas>
+        <span
+          className="rating-label"
+          style={{
+            color: `${textColor}`,
+            fontSize: `${fontSize}px`,
+            fontWeight: `${fontWeight}`,
+            display: "block",
+            position: "absolute",
+            zIndex: "100",
+            transform: "translateX(-50%)",
+            left: width / 2 + 2,
           }}
         >
-          <canvas
-            id="canvas"
-            className="canvas"
-            width={width}
-            height={width}
-            style={{
-              transform: "rotate(-90deg)",
-              position: "absolute",
-            }}
-          ></canvas>
+          {rating}
           <span
-            className="rating-label"
             style={{
               color: `${textColor}`,
-              fontSize: `${fontSize}px`,
-              fontWeight: `${fontWeight}`,
-              display: "block",
-              position: "absolute",
-              zIndex: "100",
-              transform: 'translateX(-50%)',
-              left:( width / 2) + 2
+              fontSize: `${fontSize - 5}px`,
+              fontWeight: `normal`,
             }}
           >
-            {rating}
-            <span
-              style={{
-                color: `${textColor}`,
-                fontSize: `${fontSize - 5}px`,
-                fontWeight: `normal`,
-              }}
-            >
-              <sup>%</sup>
-            </span>
+            <sup>%</sup>
           </span>
-        </div>
+        </span>
       </div>
     );
   }

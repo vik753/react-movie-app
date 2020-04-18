@@ -8,19 +8,7 @@ import App from "./components/App/App";
 import CircleRating from "./components/CircleRating/CircleRating";
 
 // ReactDOM.render(<App />, document.getElementById("root"));
-ReactDOM.render(
-  <CircleRating
-    rating={80}
-    width={40}
-    ratingColor={"#06cf10"}
-    textColor={"#fff"}
-    bgColor={"#000"}
-    ratingWidth={3}
-    fontSize={14}
-    fontWeight={"normal"}
-  />,
-  document.getElementById("root")
-);
+ReactDOM.render(<CircleRating rating={80} />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
