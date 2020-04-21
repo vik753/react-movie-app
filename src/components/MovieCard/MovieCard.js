@@ -4,7 +4,9 @@ import CircleRating from "./../CircleRating/CircleRating";
 
 const MovieCard = (props) => {
   const { movie } = props;
-  const releaseYear = movie.release_date.slice(0, 4);
+  const releaseYear = movie.release_date
+    ? movie.release_date.slice(0, 4)
+    : "No release data";
   return (
     <div className="movie-card">
       <div
