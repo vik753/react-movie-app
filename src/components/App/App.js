@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 
+import Header from "./../Header/Header";
+import Main from "./../Main/Main";
+import Footer from "./../Footer/Footer";
 import { fetchMovies } from "../../api/api";
 import MovieCard from "./../MovieCard/MovieCard";
 import "./app.scss";
@@ -16,6 +19,7 @@ class App extends Component {
       filter: "popularity.desc", // vote_average.desc,  release_date.desc
       adult: false,
       findMovie: null,
+      backgroundImage: 'transparent'
     };
   }
 
@@ -35,7 +39,7 @@ class App extends Component {
       this.state.findMovie
     );
 
-    this.setState(() => ({
+    await this.setState(() => ({
       error,
       movies,
       page,
@@ -60,7 +64,6 @@ class App extends Component {
         await this.setState(() => ({
           page: this.state.page !== 1 ? this.state.page - 1 : this.state.page,
         }));
-
         break;
       case "next":
         await this.setState(() => ({
@@ -80,17 +83,17 @@ class App extends Component {
     } else {
       const { filter } = e.target.dataset;
       await this.setState(() => ({ filter, page: 1, findMovie: null }));
+      findForm.reset();
     }
     pageNumberInput.value = this.state.page;
-    findForm.reset();
 
     this.getMovies();
   };
 
   pageInputHandler = async (e) => {
     e.preventDefault();
-    if (e.keyCode === 13) {
-      const nextPage = e.target.value;
+    const nextPage = e.target.value;
+    if (e.keyCode === 13 && nextPage <= this.state.total_pages) {
       await this.setState(() => ({ page: nextPage }));
       this.getMovies();
     }
@@ -101,7 +104,7 @@ class App extends Component {
     const findForm = e.target;
     const findMovie = findForm.elements["find-input"].value.trim();
     if (findMovie.length) {
-      this.setState(() => ({ filter: "search", findMovie }));
+      this.setState(() => ({ filter: "search", findMovie, page: 1 }));
       await this.getMovies();
       // findForm.reset();
     }
@@ -111,7 +114,7 @@ class App extends Component {
     const pageNumberInput = document.querySelector("#currentPage");
     const findForm = document.querySelector(".find-form");
     findForm.reset();
-    this.setState(() => ({
+    await this.setState(() => ({
       filter: "popularity.desc",
       findMovie: null,
       page: 1,
@@ -120,8 +123,12 @@ class App extends Component {
     pageNumberInput.value = this.state.page;
   };
 
+  clickCardHandler = async (movieBg) => {
+    await this.setState(() => ({ backgroundImage: movieBg }));
+  }
+
   render() {
-    console.log(this);
+    // console.log(this);
 
     const cards =
       !this.state.movies || this.state.error ? (
@@ -130,130 +137,29 @@ class App extends Component {
         </div>
       ) : (
         Object.values(this.state.movies).map((movie, index) => {
-          return <MovieCard movie={movie} key={movie.id} />;
+          return (
+            <MovieCard
+              movie={movie}
+              key={movie.id}
+              cardClick={this.clickCardHandler}
+            />
+          );
         })
       );
 
     return (
       <div className="app-wrapper">
-        <header>
-          <div className="header-wrapper">
-            <h1 id="headerTitle">Movies by TMDB</h1>
-            <form
-              name="find-form"
-              className="find-form"
-              onSubmit={this.findMovieHandler}
-            >
-              <input
-                name="find-input"
-                type="text"
-                placeholder="Type to find movie"
-              />
-              <i className="fa fa-search"></i>
-              <i className="fa fa-close" onClick={this.findFormClear}></i>
-            </form>
-            <form
-              name="filter-form"
-              className="filter-form"
-              onChange={this.changeFilter}
-            >
-              <h3>Filter by: </h3>
-              <div className="inputs-wrapper">
-                <input
-                  id="filter1"
-                  name="filter"
-                  type="radio"
-                  data-filter="popularity.desc"
-                  defaultChecked
-                />
-                <label htmlFor="filter1">Popularity</label>
-                <input
-                  id="filter2"
-                  name="filter"
-                  type="radio"
-                  data-filter="release_date.desc"
-                />
-                <label htmlFor="filter2">Release date</label>
-                <input
-                  id="filter3"
-                  name="filter"
-                  type="radio"
-                  data-filter="vote_average.desc"
-                />
-                <label htmlFor="filter3">Vote</label>
-                <input
-                  type="checkbox"
-                  name="filter_adult"
-                  id="filter4"
-                  defaultChecked={false}
-                />
-                <label htmlFor="filter4">Adult</label>
-              </div>
-            </form>
-          </div>
-        </header>
-        <main>
-          <div className="main-wrapper" id="main-wrapper">
-            {cards}
-          </div>
-        </main>
-        <footer>
-          <div className="footer-wrapper">
-            <button
-              data-page="first"
-              onClick={this.paginationHandler}
-              disabled={
-                this.state.page === 1 ||
-                this.state.error ||
-                this.state.isLoading
-                  ? true
-                  : false
-              }
-              className="primary"
-            >
-              Page 1
-            </button>
-            <button
-              data-page="previous"
-              onClick={this.paginationHandler}
-              disabled={
-                this.state.page === 1 ||
-                this.state.error ||
-                this.state.isLoading
-                  ? true
-                  : false
-              }
-              className="primary"
-            >
-              <i className="fa fa-chevron-left"></i>
-              Prev
-            </button>
-            <span data-page="current" className="current-page">
-              Current Page:
-              <span className="current-page__number">
-                {" "}
-                <input
-                  id="currentPage"
-                  type="number"
-                  min="1"
-                  max={this.state.total_pages}
-                  defaultValue={this.state.page}
-                  onKeyUp={this.pageInputHandler}
-                />{" "}
-                from {this.state.total_pages}
-              </span>
-            </span>
-            <button
-              data-page="next"
-              onClick={this.paginationHandler}
-              disabled={this.state.error || this.state.isLoading ? true : false}
-              className="primary"
-            >
-              Next
-              <i className="fa fa-chevron-right"></i>
-            </button>
-          </div>
-        </footer>
+        <Header
+          findMovieHandler={this.findMovieHandler}
+          findFormClear={this.findFormClear}
+          changeFilter={this.changeFilter}
+        />
+        <Main cards={cards} bg={this.state.backgroundImage}/>
+        <Footer
+          state={this.state}
+          paginationHandler={this.paginationHandler}
+          pageInputHandler={this.pageInputHandler}
+        />
       </div>
     );
   }

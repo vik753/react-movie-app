@@ -12,9 +12,8 @@
  * https://developers.themoviedb.org/3/configuration/get-api-configuration
  */
 
-const mainUrl = `https://api.themoviedb.org/3/discover/movie`;
+const mainUrl = `https://api.themoviedb.org/3`;
 const mainImgUrl = `https://image.tmdb.org`;
-const findUrl = `https://api.themoviedb.org/3/search/movie`;
 const apiKey = `21629b2bbf4bb4857806d309dcfd1837`;
 
 function serializeMovies(arr) {
@@ -41,22 +40,23 @@ const fetchMovies = async (page, filter, adult, findMovie) => {
   const findingMovie = findMovie;
   try {
     let response = null;
+    let urlParam = "";
+    let param = "";
     if (currFilter === "search" && findingMovie.length) {
-      response = await fetch(
-        `${findUrl}?api_key=${apiKey}&language=en-US&query=${findingMovie}&page=${currPage}&include_adult=${isAdult}`
-      );
+      urlParam = `${mainUrl}/search`;
+      param = `query=${findingMovie}`;
     } else {
-      response = await fetch(
-        `${mainUrl}?api_key=${apiKey}&language=en-US&sort_by=${currFilter}&include_adult=${isAdult}&include_video=false&page=${currPage}`
-      );
+      urlParam = `${mainUrl}/discover`;
+      param = `sort_by=${currFilter}`;
     }
-
+    response = await fetch(
+      `${urlParam}/movie?api_key=${apiKey}&language=en-US&${param}&include_adult=${isAdult}&page=${currPage}`
+    );
     if (!response.ok) {
       throw new Error(`Cant fetch movies!`);
     }
     const moviesRes = await response.json();
     const { page, total_pages, results } = moviesRes;
-
     const moviesWithBanners = setBanner(results);
     const movies = serializeMovies(moviesWithBanners);
     return {

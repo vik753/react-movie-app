@@ -8,7 +8,9 @@ const MovieCard = (props) => {
     ? movie.release_date.slice(0, 4)
     : "No release data";
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={() => props.cardClick(`url(${
+            movie.banner ? movie.banner : `./img/blank-img.jpg`
+          })`)}>
       <div
         className="movie-bg"
         style={{

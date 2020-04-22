@@ -43,14 +43,14 @@ header {
         width: 300px;
       }
 
-      .fa-search{
+      .fa-search {
         position: absolute;
         top: 8px;
         left: 6px;
         z-index: 1;
       }
 
-      .fa-close{
+      .fa-close {
         position: absolute;
         top: 8px;
         right: 6px;
@@ -85,6 +85,7 @@ header {
 }
 
 main {
+  position: relative;
   padding-top: 6rem;
   flex: 1 1 auto;
   background: rgb(3, 61, 92);
@@ -107,6 +108,23 @@ main {
     rgba(2, 145, 189, 1) 100%
   );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#033d5c",endColorstr="#0291bd",GradientType=1);
+
+  .main-bg {
+    width: 100%;
+    // max-width: 1200px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    // transform: translateX(-50%);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.3;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-clip: content-box;
+  }
 
   .main-wrapper {
     max-width: 1200px;
