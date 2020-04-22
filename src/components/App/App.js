@@ -15,6 +15,7 @@ class App extends Component {
       isLoading: false,
       filter: "popularity.desc", // vote_average.desc,  release_date.desc
       adult: false,
+      findMovie: null,
     };
   }
 
@@ -23,7 +24,6 @@ class App extends Component {
   }
 
   getMovies = async () => {
-    // console.log(this);
     await this.setState(() => ({
       isLoading: true,
     }));
@@ -31,7 +31,8 @@ class App extends Component {
     const { error, page, total_pages, movies } = await fetchMovies(
       this.state.page,
       this.state.filter,
-      this.state.adult
+      this.state.adult,
+      this.state.findMovie
     );
 
     this.setState(() => ({
@@ -73,23 +74,50 @@ class App extends Component {
 
   changeFilter = async (e) => {
     const pageNumberInput = document.querySelector("#currentPage");
+    const findForm = document.querySelector(".find-form");
     if (e.target.name === "filter_adult") {
       await this.setState(() => ({ adult: !this.state.adult, page: 1 }));
     } else {
       const { filter } = e.target.dataset;
-      await this.setState(() => ({ filter, page: 1 }));
+      await this.setState(() => ({ filter, page: 1, findMovie: null }));
     }
     pageNumberInput.value = this.state.page;
+    findForm.reset();
 
     this.getMovies();
   };
 
   pageInputHandler = async (e) => {
+    e.preventDefault();
     if (e.keyCode === 13) {
       const nextPage = e.target.value;
       await this.setState(() => ({ page: nextPage }));
       this.getMovies();
     }
+  };
+
+  findMovieHandler = async (e) => {
+    e.preventDefault();
+    const findForm = e.target;
+    const findMovie = findForm.elements["find-input"].value.trim();
+    if (findMovie.length) {
+      this.setState(() => ({ filter: "search", findMovie }));
+      await this.getMovies();
+      // findForm.reset();
+    }
+  };
+
+  findFormClear = async (e) => {
+    const pageNumberInput = document.querySelector("#currentPage");
+    const findForm = document.querySelector(".find-form");
+    findForm.reset();
+    this.setState(() => ({
+      filter: "popularity.desc",
+      findMovie: null,
+      page: 1,
+    }));
+    await this.getMovies();
+    pageNumberInput.value = this.state.page;
   };
 
   render() {
@@ -111,37 +139,56 @@ class App extends Component {
         <header>
           <div className="header-wrapper">
             <h1 id="headerTitle">Movies by TMDB</h1>
-            <form name="filter-form" onChange={this.changeFilter}>
+            <form
+              name="find-form"
+              className="find-form"
+              onSubmit={this.findMovieHandler}
+            >
+              <input
+                name="find-input"
+                type="text"
+                placeholder="Type to find movie"
+              />
+              <i className="fa fa-search"></i>
+              <i className="fa fa-close" onClick={this.findFormClear}></i>
+            </form>
+            <form
+              name="filter-form"
+              className="filter-form"
+              onChange={this.changeFilter}
+            >
               <h3>Filter by: </h3>
-              <input
-                id="filter1"
-                name="filter"
-                type="radio"
-                data-filter="popularity.desc"
-                defaultChecked
-              />
-              <label htmlFor="filter1">Popularity</label>
-              <input
-                id="filter2"
-                name="filter"
-                type="radio"
-                data-filter="release_date.desc"
-              />
-              <label htmlFor="filter2">Release date</label>
-              <input
-                id="filter3"
-                name="filter"
-                type="radio"
-                data-filter="vote_average.desc"
-              />
-              <label htmlFor="filter3">Vote</label>
-              <input
-                type="checkbox"
-                name="filter_adult"
-                id="filter4"
-                defaultChecked={false}
-              />
-              <label htmlFor="filter4">Adult</label>
+              <div className="inputs-wrapper">
+                <input
+                  id="filter1"
+                  name="filter"
+                  type="radio"
+                  data-filter="popularity.desc"
+                  defaultChecked
+                />
+                <label htmlFor="filter1">Popularity</label>
+                <input
+                  id="filter2"
+                  name="filter"
+                  type="radio"
+                  data-filter="release_date.desc"
+                />
+                <label htmlFor="filter2">Release date</label>
+                <input
+                  id="filter3"
+                  name="filter"
+                  type="radio"
+                  data-filter="vote_average.desc"
+                />
+                <label htmlFor="filter3">Vote</label>
+                <input
+                  type="checkbox"
+                  name="filter_adult"
+                  id="filter4"
+                  defaultChecked={false}
+                />
+                <label htmlFor="filter4">Adult</label>
+              </div>
             </form>
           </div>
         </header>

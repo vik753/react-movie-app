@@ -1,18 +1,8 @@
-@font-face {
-  font-family: "photon-entypo";
-  src: url("./resources/photon-entypo.eot");
-  src: url("./resources/photon-entypo.eot?#iefix") format("eot"),
-    url("./resources/photon-entypo.woff") format("woff"),
-    url("./resources/photon-entypo.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
 body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "photon-entypo", system, -apple-system, ".SFNSDisplay-Regular",
+  font-family: system, -apple-system, ".SFNSDisplay-Regular",
     "Helvetica Neue", Helvetica, "Segoe UI", sans-serif;
   font-size: 0.9rem;
   font-weight: normal;

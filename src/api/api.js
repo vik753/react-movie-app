@@ -14,6 +14,7 @@
 
 const mainUrl = `https://api.themoviedb.org/3/discover/movie`;
 const mainImgUrl = `https://image.tmdb.org`;
+const findUrl = `https://api.themoviedb.org/3/search/movie`;
 const apiKey = `21629b2bbf4bb4857806d309dcfd1837`;
 
 function serializeMovies(arr) {
@@ -33,14 +34,23 @@ function setBanner(arr) {
   }));
 }
 
-const fetchMovies = async (page, filter, adult) => {
+const fetchMovies = async (page, filter, adult, findMovie) => {
   const currPage = page;
   const currFilter = filter;
   const isAdult = adult;
+  const findingMovie = findMovie;
   try {
-    const response = await fetch(
-      `${mainUrl}?api_key=${apiKey}&language=en-US&sort_by=${currFilter}&include_adult=${isAdult}&include_video=false&page=${currPage}`
-    );
+    let response = null;
+    if (currFilter === "search" && findingMovie.length) {
+      response = await fetch(
+        `${findUrl}?api_key=${apiKey}&language=en-US&query=${findingMovie}&page=${currPage}&include_adult=${isAdult}`
+      );
+    } else {
+      response = await fetch(
+        `${mainUrl}?api_key=${apiKey}&language=en-US&sort_by=${currFilter}&include_adult=${isAdult}&include_video=false&page=${currPage}`
+      );
+    }
+
     if (!response.ok) {
       throw new Error(`Cant fetch movies!`);
     }

@@ -24,6 +24,7 @@ header {
     margin: 0 auto;
     padding: 0 11px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
 
@@ -31,10 +32,42 @@ header {
       font-size: 2rem;
     }
 
-    form {
+    .find-form {
+      position: relative;
+
+      input {
+        padding: 4px 25px 4px 25px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        font-size: 1.2rem;
+        width: 300px;
+      }
+
+      .fa-search{
+        position: absolute;
+        top: 8px;
+        left: 6px;
+        z-index: 1;
+      }
+
+      .fa-close{
+        position: absolute;
+        top: 8px;
+        right: 6px;
+        z-index: 1;
+        cursor: pointer;
+      }
+    }
+
+    .filter-form {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
+
+      .inputs-wrapper {
+        display: flex;
+      }
 
       input {
         margin-right: 4px;
