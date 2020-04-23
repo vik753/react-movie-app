@@ -90,24 +90,24 @@ main {
   flex: 1 1 auto;
   background: rgb(3, 61, 92);
   background: -moz-linear-gradient(
-    0deg,
-    rgba(3, 61, 92, 1) 0%,
-    rgba(1, 109, 147, 1) 48%,
-    rgba(2, 145, 189, 1) 100%
+          0deg,
+          rgba(3, 61, 92, 1) 0%,
+          rgba(1, 109, 147, 1) 48%,
+          rgba(2, 145, 189, 1) 100%
   );
   background: -webkit-linear-gradient(
-    0deg,
-    rgba(3, 61, 92, 1) 0%,
-    rgba(1, 109, 147, 1) 48%,
-    rgba(2, 145, 189, 1) 100%
+          0deg,
+          rgba(3, 61, 92, 1) 0%,
+          rgba(1, 109, 147, 1) 48%,
+          rgba(2, 145, 189, 1) 100%
   );
   background: linear-gradient(
-    0deg,
-    rgba(3, 61, 92, 1) 0%,
-    rgba(1, 109, 147, 1) 48%,
-    rgba(2, 145, 189, 1) 100%
+          0deg,
+          rgba(3, 61, 92, 1) 0%,
+          rgba(1, 109, 147, 1) 48%,
+          rgba(2, 145, 189, 1) 100%
   );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#033d5c",endColorstr="#0291bd",GradientType=1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#033d5c", endColorstr="#0291bd", GradientType=1);
 
   .main-bg {
     width: 100%;
@@ -142,6 +142,9 @@ footer {
   text-align: center;
   padding: 4px;
   margin: 0;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
 
   .footer-wrapper {
     max-width: 1200px;
@@ -150,12 +153,15 @@ footer {
     .fa-chevron-left {
       margin-right: 0.3rem;
     }
+
     .fa-chevron-right {
       margin-left: 0.3rem;
     }
+
     .current-page {
       margin: 0 0.5rem;
     }
+
     .current-page__number {
       font-size: 1rem;
     }

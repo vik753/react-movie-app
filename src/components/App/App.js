@@ -1,11 +1,12 @@
-import React, { Component } from "react";
-
+import React, {Component} from "react";
+import {Route} from "react-router-dom";
 import Header from "./../Header/Header";
-import Main from "./../Main/Main";
+import Main from "../Main/Main";
 import Footer from "./../Footer/Footer";
-import { fetchMovies } from "../../api/api";
+import {fetchMovies} from "../../api/api";
 import MovieCard from "./../MovieCard/MovieCard";
 import "./app.scss";
+import AboutMovie from "../AboutMovie/AboutMovie";
 
 class App extends Component {
   constructor() {
@@ -19,11 +20,11 @@ class App extends Component {
       filter: "popularity.desc", // vote_average.desc,  release_date.desc
       adult: false,
       findMovie: null,
-      backgroundImage: 'transparent'
+      backgroundImage: "transparent",
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.getMovies();
   }
 
@@ -32,7 +33,7 @@ class App extends Component {
       isLoading: true,
     }));
 
-    const { error, page, total_pages, movies } = await fetchMovies(
+    const {error, page, total_pages, movies} = await fetchMovies(
       this.state.page,
       this.state.filter,
       this.state.adult,
@@ -53,7 +54,7 @@ class App extends Component {
 
   paginationHandler = async (e) => {
     const pageNumberInput = document.querySelector("#currentPage");
-    const { page } = e.target.dataset;
+    const {page} = e.target.dataset;
     switch (page) {
       case "first":
         await this.setState(() => ({
@@ -76,26 +77,27 @@ class App extends Component {
   };
 
   changeFilter = async (e) => {
+    e.preventDefault();
     const pageNumberInput = document.querySelector("#currentPage");
     const findForm = document.querySelector(".find-form");
     if (e.target.name === "filter_adult") {
-      await this.setState(() => ({ adult: !this.state.adult, page: 1 }));
+      await this.setState(() => ({adult: !this.state.adult, page: 1}));
     } else {
-      const { filter } = e.target.dataset;
-      await this.setState(() => ({ filter, page: 1, findMovie: null }));
+      const {filter} = e.target.dataset;
+      await this.setState(() => ({filter, page: 1, findMovie: null}));
       findForm.reset();
     }
     pageNumberInput.value = this.state.page;
 
-    this.getMovies();
+    await this.getMovies();
   };
 
   pageInputHandler = async (e) => {
     e.preventDefault();
     const nextPage = e.target.value;
     if (e.keyCode === 13 && nextPage <= this.state.total_pages) {
-      await this.setState(() => ({ page: nextPage }));
-      this.getMovies();
+      await this.setState(() => ({page: nextPage}));
+      await this.getMovies();
     }
   };
 
@@ -104,7 +106,7 @@ class App extends Component {
     const findForm = e.target;
     const findMovie = findForm.elements["find-input"].value.trim();
     if (findMovie.length) {
-      this.setState(() => ({ filter: "search", findMovie, page: 1 }));
+      await this.setState(() => ({filter: "search", findMovie, page: 1}));
       await this.getMovies();
       // findForm.reset();
     }
@@ -124,12 +126,11 @@ class App extends Component {
   };
 
   clickCardHandler = async (movieBg) => {
-    await this.setState(() => ({ backgroundImage: movieBg }));
-  }
+    await this.setState(() => ({backgroundImage: movieBg}));
+  };
 
   render() {
     // console.log(this);
-
     const cards =
       !this.state.movies || this.state.error ? (
         <div>
@@ -154,7 +155,24 @@ class App extends Component {
           findFormClear={this.findFormClear}
           changeFilter={this.changeFilter}
         />
-        <Main cards={cards} bg={this.state.backgroundImage}/>
+        {/* <Main cards={cards} bg={this.state.backgroundImage} /> */}
+        <Route
+          path="/"
+          exact
+          // component={Main}
+          render={
+            (props) =>
+              <Main
+                {...props}
+                cards={cards}
+                bg={this.state.backgroundImage}
+              />
+          }
+        />
+        <Route
+          path="/:id"
+          component={AboutMovie}
+        />
         <Footer
           state={this.state}
           paginationHandler={this.paginationHandler}
