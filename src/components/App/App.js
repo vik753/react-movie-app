@@ -103,12 +103,14 @@ class App extends Component {
 
   findMovieHandler = async (e) => {
     e.preventDefault();
+    const pageNumberInput = document.querySelector("#currentPage");
     const findForm = e.target;
     const findMovie = findForm.elements["find-input"].value.trim();
     if (findMovie.length) {
       await this.setState(() => ({filter: "search", findMovie, page: 1}));
       await this.getMovies();
     }
+    pageNumberInput.value = this.state.page;
   };
 
   findFormClear = async (e) => {
@@ -129,7 +131,7 @@ class App extends Component {
   };
 
   cardClickHandler = async (movie) => {
-    await this.setState(() => ({currentMovie: movie}))
+    await this.setState(() => ({currentMovie: movie}));
   }
 
   render() {

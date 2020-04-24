@@ -1,4 +1,77 @@
 .about-movie__wrapper {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+
+  .movie-banner {
+    min-width: 350px;
+    width: 30%;
+    height: 550px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0 1rem 1rem 0;
+    border-radius: 11px;
+    position: relative;
+
+    .goHomeButton {
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      background: #017ba4;
+      position: absolute;
+      bottom: -4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 1px solid transparent;
+      border-radius: 4px;
+
+      &:hover {
+        box-shadow: 0 0 4px 3px rgba(0, 0, 0, .3);
+        border: 1px solid #fff;
+      }
+    }
+  }
+
+  .movie-article {
+    margin-top: 70px;
+    padding: 0 0 1rem 0;
+    color: #d9d4ce;
+    font-size: 1.1rem;
+  }
+
+  @media(max-width: 768px){
+    flex-direction: column;
+    align-items: center;
+    padding: .2rem;
+
+    .movie-banner {
+      min-width: 250px;
+      width: 80%;
+      height: 350px;
+      padding: 0;
+
+      .goHomeButton {
+        width: 140px;
+
+        &:hover {
+          box-shadow: none;
+          border: none;
+        }
+      }
+    }
+
+    .movie-article {
+      margin: 50px 11px 0 11px;
+      padding: 0 0 1rem 0;
+      color: #d9d4ce;
+      font-size: 1.1rem;
+    }
+
+  }
+
 }
