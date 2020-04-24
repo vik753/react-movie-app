@@ -1,11 +1,15 @@
+.cardLink {
+  flex: 0 0 230px;
+  margin: 0 11px 11px 0;
+}
+
 .movie-card {
   border: 1px solid transparent;
   border-radius: 10px;
-  flex: 0 0 230px;
+  //flex: 0 0 230px;
   height: 440px;
   background: #fff;
   transition: all 0.2s ease-in-out;
-  margin: 0 11px 11px 0;
   position: relative;
 
   &:hover {

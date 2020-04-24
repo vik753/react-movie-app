@@ -3,14 +3,18 @@ import "./movie-card.scss";
 import CircleRating from "./../CircleRating/CircleRating";
 
 const MovieCard = (props) => {
-  const { movie } = props;
+  const {movie} = props;
   const releaseYear = movie.release_date
     ? movie.release_date.slice(0, 4)
     : "No release data";
   return (
-    <div className="movie-card" onClick={() => props.cardClick(`url(${
-            movie.banner ? movie.banner : `./img/blank-img.jpg`
-          })`)}>
+    <div
+      className="movie-card"
+      onMouseOver={() => props.mouseOverCard(`url(${
+      movie.banner ? movie.banner : `./img/blank-img.jpg`
+      })`)}
+      onClick={() => props.cardClick(movie)}
+    >
       <div
         className="movie-bg"
         style={{
@@ -18,7 +22,7 @@ const MovieCard = (props) => {
             movie.banner ? movie.banner : `./img/blank-img.jpg`
           })`,
         }}
-      ></div>
+      />
       <div className="movie-overview">
         <p className="movie-year">{releaseYear}</p>
         <p className="movie-title">{movie.original_title}</p>

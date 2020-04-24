@@ -1,5 +1,6 @@
 import React from 'react';
 import {withRouter} from 'react-router'
+import './header.scss'
 
 const Header = (props) => {
   const pathName = props.location.pathname;
@@ -36,7 +37,7 @@ const Header = (props) => {
                   name="filter"
                   type="radio"
                   data-filter="popularity.desc"
-                  defaultChecked
+                  defaultChecked={true}
                 />
                 <label htmlFor="filter1">Popularity</label>
                 <input

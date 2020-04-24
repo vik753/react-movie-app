@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Route} from "react-router-dom";
+import {Link, Route} from "react-router-dom";
 import Header from "./../Header/Header";
 import Main from "../Main/Main";
 import Footer from "./../Footer/Footer";
@@ -21,6 +21,7 @@ class App extends Component {
       adult: false,
       findMovie: null,
       backgroundImage: "transparent",
+      currentMovie: null,
     };
   }
 
@@ -77,7 +78,6 @@ class App extends Component {
   };
 
   changeFilter = async (e) => {
-    e.preventDefault();
     const pageNumberInput = document.querySelector("#currentPage");
     const findForm = document.querySelector(".find-form");
     if (e.target.name === "filter_adult") {
@@ -108,7 +108,6 @@ class App extends Component {
     if (findMovie.length) {
       await this.setState(() => ({filter: "search", findMovie, page: 1}));
       await this.getMovies();
-      // findForm.reset();
     }
   };
 
@@ -125,9 +124,13 @@ class App extends Component {
     pageNumberInput.value = this.state.page;
   };
 
-  clickCardHandler = async (movieBg) => {
+  mouseOverCardHandler = async (movieBg) => {
     await this.setState(() => ({backgroundImage: movieBg}));
   };
+
+  cardClickHandler = async (movie) => {
+    await this.setState(() => ({currentMovie: movie}))
+  }
 
   render() {
     // console.log(this);
@@ -139,15 +142,19 @@ class App extends Component {
       ) : (
         Object.values(this.state.movies).map((movie, index) => {
           return (
-            <MovieCard
-              movie={movie}
-              key={movie.id}
-              cardClick={this.clickCardHandler}
-            />
+            <Link
+              className="cardLink"
+              to={`/${movie.id}`}
+              key={movie.id}>
+              <MovieCard
+                movie={movie}
+                mouseOverCard={this.mouseOverCardHandler}
+                cardClick={this.cardClickHandler}
+              />
+            </Link>
           );
         })
       );
-
     return (
       <div className="app-wrapper">
         <Header
@@ -155,7 +162,6 @@ class App extends Component {
           findFormClear={this.findFormClear}
           changeFilter={this.changeFilter}
         />
-        {/* <Main cards={cards} bg={this.state.backgroundImage} /> */}
         <Route
           path="/"
           exact
@@ -171,7 +177,7 @@ class App extends Component {
         />
         <Route
           path="/:id"
-          component={AboutMovie}
+          render={(props) => <AboutMovie {...props} currentMovie={this.state.currentMovie}/>}
         />
         <Footer
           state={this.state}
