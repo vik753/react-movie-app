@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Link, Route} from "react-router-dom";
+import {Link, Route, Switch} from "react-router-dom";
 import Header from "./../Header/Header";
 import Main from "../Main/Main";
 import Footer from "./../Footer/Footer";
@@ -67,7 +67,7 @@ class App extends Component {
           page: this.state.page !== 1 ? this.state.page - 1 : this.state.page,
         }));
         break;
-      case "next":
+      default:
         await this.setState(() => ({
           page: this.state.page + 1,
         }));
@@ -146,7 +146,7 @@ class App extends Component {
           return (
             <Link
               className="cardLink"
-              to={`/${movie.id}`}
+              to={`/About`}
               key={movie.id}>
               <MovieCard
                 movie={movie}
@@ -164,23 +164,25 @@ class App extends Component {
           findFormClear={this.findFormClear}
           changeFilter={this.changeFilter}
         />
-        <Route
-          path="/"
-          exact
-          // component={Main}
-          render={
-            (props) =>
-              <Main
-                {...props}
-                cards={cards}
-                bg={this.state.backgroundImage}
-              />
-          }
-        />
-        <Route
-          path="/:id"
-          render={(props) => <AboutMovie {...props} currentMovie={this.state.currentMovie}/>}
-        />
+        <Switch>
+          <Route
+            path="/"
+            exact
+            render={
+              (props) =>
+                <Main
+                  {...props}
+                  cards={cards}
+                  bg={this.state.backgroundImage}
+                />
+            }
+          />
+          <Route
+            path="/About"
+            exact
+            render={(props) => <AboutMovie {...props} currentMovie={this.state.currentMovie}/>}
+          />
+        </Switch>
         <Footer
           state={this.state}
           paginationHandler={this.paginationHandler}

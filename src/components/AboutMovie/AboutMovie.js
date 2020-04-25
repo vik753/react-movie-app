@@ -6,7 +6,7 @@ import './aboutMovie.scss'
 const AboutMovie = (props) => {
   // console.log(props);
   const {currentMovie} = props;
-  if(!Object.values(props.currentMovie).length){
+  if (!props.currentMovie) {
     return (<h1>No data...</h1>)
   }
   const {original_title, overview, popularity, release_date, vote_average, vote_count} = props.currentMovie;
