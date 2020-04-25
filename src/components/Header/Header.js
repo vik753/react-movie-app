@@ -10,7 +10,7 @@ const Header = (props) => {
     <header>
       <div className="header-wrapper">
         <h1 id="headerTitle">Movies by TMDB</h1>
-        {pathName === "/" ?
+        {pathName === "/About" ? null :
           <React.Fragment>
             <form
               name="find-form"
@@ -64,7 +64,7 @@ const Header = (props) => {
               </div>
             </form>
           </React.Fragment>
-          : null}
+        }
       </div>
     </header>
   );

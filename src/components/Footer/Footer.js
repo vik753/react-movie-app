@@ -9,26 +9,27 @@ const Footer = (props) => {
   return (
     <footer>
       <div className="footer-wrapper">
-        {pathName === "/" ? (
-          <React.Fragment>
-            <button
-              data-page="first"
-              onClick={paginationHandler}
-              disabled={!!(state.page === 1 || state.error || state.isLoading)}
-              className="primary"
-            >
-              Page 1
-            </button>
-            <button
-              data-page="previous"
-              onClick={paginationHandler}
-              disabled={!!(state.page === 1 || state.error || state.isLoading)}
-              className="primary"
-            >
-              <i className="fa fa-chevron-left"></i>
-              Prev
-            </button>
-            <span data-page="current" className="current-page">
+        {pathName === "/About" ? null :
+          (
+            <React.Fragment>
+              <button
+                data-page="first"
+                onClick={paginationHandler}
+                disabled={!!(state.page === 1 || state.error || state.isLoading)}
+                className="primary"
+              >
+                Page 1
+              </button>
+              <button
+                data-page="previous"
+                onClick={paginationHandler}
+                disabled={!!(state.page === 1 || state.error || state.isLoading)}
+                className="primary"
+              >
+                <i className="fa fa-chevron-left"></i>
+                Prev
+              </button>
+              <span data-page="current" className="current-page">
               Current Page:
               <span className="current-page__number">
                 {" "}
@@ -43,23 +44,24 @@ const Footer = (props) => {
                 from {state.total_pages}
               </span>
             </span>
-            <button
-              data-page="next"
-              onClick={paginationHandler}
-              disabled={
-                !!(
-                  state.total_pages === state.page ||
-                  state.error ||
-                  state.isLoading
-                )
-              }
-              className="primary"
-            >
-              Next
-              <i className="fa fa-chevron-right"></i>
-            </button>
-          </React.Fragment>
-        ) : null}
+              <button
+                data-page="next"
+                onClick={paginationHandler}
+                disabled={
+                  !!(
+                    state.total_pages === state.page ||
+                    state.error ||
+                    state.isLoading
+                  )
+                }
+                className="primary"
+              >
+                Next
+                <i className="fa fa-chevron-right"></i>
+              </button>
+            </React.Fragment>
+          )
+        }
       </div>
     </footer>
   );
