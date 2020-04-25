@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Link, Route, Switch} from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import Header from "./../Header/Header";
 import Main from "../Main/Main";
 import Footer from "./../Footer/Footer";
@@ -130,8 +130,9 @@ class App extends Component {
     await this.setState(() => ({backgroundImage: movieBg}));
   };
 
-  cardClickHandler = async (movie) => {
+  cardClickHandler = async (props, movie) => {
     await this.setState(() => ({currentMovie: movie}));
+    props.history.push("/About");
   }
 
   render() {
@@ -144,16 +145,12 @@ class App extends Component {
       ) : (
         Object.values(this.state.movies).map((movie, index) => {
           return (
-            <Link
-              className="cardLink"
-              to={`/About`}
-              key={movie.id}>
-              <MovieCard
-                movie={movie}
-                mouseOverCard={this.mouseOverCardHandler}
-                cardClick={this.cardClickHandler}
-              />
-            </Link>
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              mouseOverCard={this.mouseOverCardHandler}
+              cardClick={this.cardClickHandler}
+            />
           );
         })
       );
@@ -166,8 +163,11 @@ class App extends Component {
         />
         <Switch>
           <Route
-            path="/"
+            path="/About"
             exact
+            render={(props) => <AboutMovie {...props} currentMovie={this.state.currentMovie}/>}
+          />
+          <Route
             render={
               (props) =>
                 <Main
@@ -176,11 +176,6 @@ class App extends Component {
                   bg={this.state.backgroundImage}
                 />
             }
-          />
-          <Route
-            path="/About"
-            exact
-            render={(props) => <AboutMovie {...props} currentMovie={this.state.currentMovie}/>}
           />
         </Switch>
         <Footer
